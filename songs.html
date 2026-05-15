@@ -1,0 +1,85 @@
+
+
+  
+<!DOCTYPE html>
+<html>
+<head>
+<title>Play Song</title>
+
+<style>
+  body {
+    text-align: center;
+    padding-top: 40px;
+    background: #222;
+    color: white;
+    font-family: Arial, sans-serif;
+  }
+
+  .back-btn {
+    background: #4ecdc4;
+    padding: 10px 20px;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+  }
+
+  .quiz-btn {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  button {
+    padding: 10px 20px;
+    margin-top: 10px;
+    font-size: 18px;
+    border-radius: 8px;
+    background: #00ff9f;
+    border: none;
+    cursor: pointer;
+  }
+</style>
+</head>
+
+<body>
+
+<button class="back-btn" onclick="goBack()">⬅ Back</button>
+
+<button class="quiz-btn" onclick="goQuiz()">🎵 Go to Quiz</button>
+
+<h2>Playing Song</h2>
+
+<audio id="music" controls></audio>
+
+<script>
+  const file = localStorage.getItem("selectedSong");
+
+  if (file) {
+    const audio = document.getElementById("music");
+    audio.src = "songs/" + file;
+
+    audio.play().catch(() => {
+      console.log("Autoplay blocked. User must press Play.");
+    });
+
+  } else {
+    document.body.innerHTML += "<p>No song selected!</p>";
+  }
+
+  function goBack() {
+    window.location.href = "index.html";  
+  }
+
+  function goQuiz() {
+    window.location.href = "quiz.html";
+  }
+</script>
+
+</body>
+</html>
+

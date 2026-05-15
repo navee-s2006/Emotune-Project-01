@@ -1,0 +1,173 @@
+ v<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emotune - Music Interaction</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 25%, #45b7d1 50%, #96ceb4 75%, #ffeaa7 100%);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+    min-height: 100vh;
+    padding: 1rem;
+  }
+
+  @keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  video, canvas {
+    width: 100%;
+    border-radius: 12px;
+  }
+
+</style>
+</head>
+
+<body class="flex flex-col items-center">
+
+<h1 class="text-3xl font-bold text-white mb-4">Music Interaction</h1>
+
+<!-- Voice Search -->
+<div class="music-box p-4 rounded shadow-md mb-6 w-full max-w-md bg-white/20">
+  <h2 class="font-semibold mb-2">🎤 Voice Search</h2>
+  <button id="recordBtn" class="px-4 py-2 bg-blue-600 text-white rounded">Start Listening</button>
+  <p id="voiceStatus" class="mt-2 text-white">Click to speak a song name.</p>
+</div>
+
+<!-- Typing Search -->
+<div class="music-box p-4 rounded shadow-md mb-6 w-full max-w-md bg-white/20">
+  <h2 class="font-semibold mb-2">⌨️ Search Songs</h2>
+  <input id="songInput" type="text" placeholder="Type song name..." class="w-full p-2 border rounded mb-2">
+  <button id="searchBtn" class="px-4 py-2 bg-green-600 text-white rounded">Search</button>
+  <p id="searchResult" class="mt-2 text-white"></p>
+</div>
+
+<!-- Camera Button -->
+<div class="music-box p-4 rounded shadow-md mb-6 w-full max-w-md text-center bg-white/20">
+  <h2 class="font-semibold mb-2">📷 Capture Mood</h2>
+  <button id="cameraBtn" class="px-4 py-2 bg-purple-600 text-white rounded">Open Camera Page</button>
+</div>
+
+<script>
+
+// Go to camera page
+document.getElementById("cameraBtn").addEventListener("click", () => {
+  window.location.href = "index.html";
+});
+
+// Redirect to songs page with selected song
+function goToSongsPage(songFile) {
+  localStorage.setItem("selectedSong", songFile);
+  window.location.href = "songs.html";
+}
+
+// Song list
+const songMap = {
+  
+  "sad": "sad.mp3",
+  "happy": "happy.mp3",
+  "angry": "angry.mp3",
+  "neutral":"neutral.mp3"
+  
+  
+};
+
+// Play Tamil Sorry
+function playTamilSorry() {
+  const sorryAudio = new Audio("tamilsorry.mp3");
+  sorryAudio.play();
+}
+
+// Voice Recognition
+const recordBtn = document.getElementById("recordBtn");
+const voiceStatus = document.getElementById("voiceStatus");
+
+let listening = false;
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+if (SpeechRecognition) {
+
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-IN";
+  recognition.continuous = false;
+  recognition.interimResults = false;
+
+  recordBtn.addEventListener("click", () => {
+    recognition.start();
+    listening = true;
+    recordBtn.innerText = "Listening...";
+    voiceStatus.innerText = "🎙 Listening...";
+  });
+
+  recognition.onresult = function(event) {
+    const userSaid = event.results[0][0].transcript.toLowerCase();
+    voiceStatus.innerText = "You said: " + userSaid;
+
+    let foundSong = null;
+
+    // BEST MATCH logic
+    for (let key in songMap) {
+      if (userSaid.includes(key)) {
+        foundSong = songMap[key];
+        break;
+      }
+    }
+
+    if (foundSong) {
+      goToSongsPage(foundSong);
+    } else {
+      voiceStatus.innerText = "Song not found. Playing your voice.";
+      playTamilSorry();
+    }
+  };
+
+  recognition.onerror = function() {
+    voiceStatus.innerText = "Didn't understand. Playing your voice.";
+    playTamilSorry();
+  };
+
+  recognition.onend = function() {
+    listening = false;
+    recordBtn.innerText = "Start Listening";
+  };
+
+} else {
+  voiceStatus.innerText = "Speech Recognition not supported.";
+  recordBtn.disabled = true;
+}
+
+
+// Typing Search
+document.getElementById("searchBtn").addEventListener("click", () => {
+  const userText = document.getElementById("songInput").value.toLowerCase();
+
+  let foundSong = null;
+
+  for (let key in songMap) {
+    if (userText.includes(key)) {
+      foundSong = songMap[key];
+      break;
+    }
+  }
+
+  if (foundSong) {
+    goToSongsPage(foundSong);
+  } else {
+    document.getElementById("searchResult").innerText = "Song not found. Playing your voice.";
+    playTamilSorry();
+  }
+});
+
+</script>
+
+</body>
+</html>
