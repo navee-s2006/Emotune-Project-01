@@ -28,8 +28,6 @@ Emotune is a web-based application that detects a user's facial emotion using th
 - Face API.js (Emotion Detection)
 - WebRTC (Camera Access)
 
-### Backend (Optional)
-- Firebase / Node.js (if used)
 
 ---
 
