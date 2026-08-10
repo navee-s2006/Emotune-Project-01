@@ -168,7 +168,7 @@ This project is developed for educational purposes.
 
 **Naveena**
 
-GitHub: https://github.com/your-username
+GitHub: https://navee-s2006.github.io/Emotune-Project-01/
 
 ---
 
